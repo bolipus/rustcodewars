@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::str::FromStr;
 
 fn reverse_words(input: &str) -> String {
     let v: Vec<&str> = input.split(" ").collect();
@@ -105,6 +106,33 @@ fn gps(s: i32, x: Vec<f64>) -> i32 {
         .floor() as i32
 }
 
+fn good_vs_evil(good: &str, evil: &str) -> String {
+    let good_worth = vec![1, 2, 3, 3, 4, 10];
+    let evil_worth = vec![1, 2, 2, 2, 3, 5, 10];
+
+    let good_result: i32 = good
+        .split_whitespace()
+        .map(|s| i32::from_str(s).unwrap())
+        .zip(good_worth.iter())
+        .map(|(a, b)| a * b)
+        .sum();
+
+    let evil_result: i32 = evil
+        .split_whitespace()
+        .map(|s| i32::from_str(s).unwrap())
+        .zip(evil_worth.iter())
+        .map(|(a, b)| a * b)
+        .sum();
+
+    if good_result > evil_result {
+        return String::from("Battle Result: Good triumphs over Evil");
+    } else if good_result < evil_result {
+        return String::from("Battle Result: Evil eradicates all trace of Good");
+    }
+
+    return String::from("Battle Result: No victor on this battle field");
+}
+
 fn main() {
     /* println!("{}", duplicate_encode("Success"));
 
@@ -120,8 +148,12 @@ fn main() {
          None => println!("")
     };*/
 
-    let mut x = vec![0.0, 0.23, 0.46, 0.69, 0.92, 1.15, 1.38, 1.61];
+    /* let mut x = vec![0.0, 0.23, 0.46, 0.69, 0.92, 1.15, 1.38, 1.61];
     let mut s = 20;
 
-    println!("{}", gps(s, x));
+    println!("{}", gps(s, x));*/
+
+    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 0"));
+    println!("{}", good_vs_evil("0 0 0 0 0 0", "0 0 0 0 0 0 10"));
+    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 10"));
 }
