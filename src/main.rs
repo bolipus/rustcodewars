@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fmt;
+use std::mem;
 use std::str::FromStr;
 
 fn reverse_words(input: &str) -> String {
@@ -133,6 +135,93 @@ fn good_vs_evil(good: &str, evil: &str) -> String {
     return String::from("Battle Result: No victor on this battle field");
 }
 
+fn literals_operator() {
+    println!("1 + 2 = {}", 1i32 + 2);
+
+    println!("0011 ^ 0110 = {:04b}", 0b0011u32 ^ 0b0110u32);
+
+    println!("0011 << 2 = {:04b}", 0b0011u32 << 2);
+
+    println!("0011 >> 2 = {:04b}", 0b0011u32 >> 2);
+
+    println!("0o7 << 1 = {:04o}", 0o7u32 << 1);
+
+    println!("0x7 << 1 = {:04x}", 0x7u32 << 1);
+}
+
+fn reverse(pair: (i32, bool)) -> (bool, i32) {
+    let (x, y) = pair;
+    (y, x)
+}
+
+#[derive(Debug)]
+struct Matrix(f32, f32, f32, f32);
+
+fn transpose(matrix: Matrix) -> Matrix {
+    Matrix(matrix.0, matrix.2, matrix.1, matrix.3)
+}
+
+impl fmt::Display for Matrix {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "( {}, {} )\n( {}, {} )", self.0, self.1, self.2, self.3)
+    }
+}
+
+fn tuple_activity() {
+    println!("{:?}", reverse((20i32, false)));
+    println!("one element tuple: {:?}", (5u32,));
+    println!("just an integer: {:?}", (5u32));
+
+    let tuple = (1, "hello", 4.5, true);
+    let (a, b, c, d) = tuple;
+    println!("{:?}, {:?}, {:?}, {:?}", a, b, c, d);
+
+    let matrix = Matrix(1.1, 1.2, 2.1, 2.2);
+    println!("Matrix:\n{}", matrix);
+
+    println!("Transpose:\n{}", transpose(matrix));
+}
+
+fn analyze_slice(slice: &[Matrix]) {
+    println!("first element of the slice: \n{}", slice[0]);
+    println!("the slice has {} elements.", slice.len());
+}
+
+fn arrays_slices() {
+    let x: [Matrix; 2] = [
+        Matrix(10.2f32, 2.1f32, 3.1f32, 4.5f32),
+        Matrix(5.2f32, 6.1f32, 2.1f32, 8.5f32),
+    ];
+
+    println!("Array occupies: {:?} bytes", mem::size_of_val(&x));
+
+    analyze_slice(&x[1..2]);
+}
+
+#[derive(Debug, Copy, Clone)]
+struct Person<'a> {
+    name: &'a str,
+    age: u8,
+}
+
+impl<'a> Person<'a> {
+    fn changeName(&mut self, new_name: &'a str) -> &'a Person {
+        self.name = new_name;
+        self
+    }
+}
+
+fn struct_test() {
+    let mut person = Person {
+        name: "Peter",
+        age: 30u8,
+    };
+    let new_name = "Janez";
+    let changedPerson = person.changeName(new_name);
+
+    println!("Person: {:?}", changedPerson);
+}
+
 fn main() {
     /* println!("{}", duplicate_encode("Success"));
 
@@ -153,7 +242,14 @@ fn main() {
 
     println!("{}", gps(s, x));*/
 
-    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 0"));
+    /* println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 0"));
     println!("{}", good_vs_evil("0 0 0 0 0 0", "0 0 0 0 0 0 10"));
-    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 10"));
+    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 10"));*/
+
+    // literals_operator();
+
+    //tuple_activity();
+
+    //arrays_slices();
+    struct_test();
 }
