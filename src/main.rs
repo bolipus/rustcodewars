@@ -211,6 +211,32 @@ impl<'a> Person<'a> {
     }
 }
 
+#[derive(Debug)]
+struct Point {
+    x: f32,
+    y: f32,
+}
+
+#[derive(Debug)]
+struct Triangle {
+    top_left: Point,
+    bottom_right: Point,
+}
+
+struct Unit;
+
+struct Pair(i32, i32);
+
+fn square(point: Point, val: f32) -> Triangle {
+    Triangle {
+        bottom_right: Point {
+            x: point.x + val,
+            y: point.y - val,
+        },
+        top_left: point,
+    }
+}
+
 fn struct_test() {
     let mut person = Person {
         name: "Peter",
@@ -220,6 +246,42 @@ fn struct_test() {
     let changedPerson = person.changeName(new_name);
 
     println!("Person: {:?}", changedPerson);
+
+    let point = Point { x: 20.2, y: 30.3 };
+
+    println!("Point: {:?}", point);
+
+    let bottom_right = Point { x: 10.2, ..point };
+
+    println!("bottom_right: {:?}", bottom_right);
+
+    let top_left = Point { x: 2.2, y: 5.3 };
+
+    let triangle = Triangle {
+        bottom_right: bottom_right,
+        top_left: top_left,
+    };
+    println!("{:?}", triangle);
+
+    let Triangle {
+        bottom_right: Point { x: x1, y: y1 },
+        top_left: Point { x: x2, y: y2 },
+    } = triangle;
+
+    println!("x1: {}, y1: {}, x2: {}, y2:{}", x1, y1, x2, y2);
+
+    println!("Area:{}", (x2 - x1) * (y2 - y1));
+
+    let unit = Unit;
+
+    let pair = Pair(20, 30);
+    println!("pair contains {:?} and {:?}", pair.0, pair.1);
+
+    let Pair(x, y) = pair;
+
+    println!("pair contains {:?} and {:?}", x, y);
+
+    println!("{:?}", square(point, 20.2));
 }
 
 fn main() {
