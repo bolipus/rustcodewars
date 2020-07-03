@@ -284,6 +284,75 @@ fn struct_test() {
     println!("{:?}", square(point, 20.2));
 }
 
+enum WebEvent {
+    PageLoad,
+    PageUnload,
+    KeyPress(char),
+    Paste(String),
+    Click { x: i64, y: i64 },
+}
+
+use crate::WebEvent::*;
+
+impl WebEvent {
+    fn run(&self, m: i32) -> String {
+        match self {
+            PageLoad => return format!("Page loaded in {} seconds.", m),
+            PageUnload => format!("PageUnloaded"),
+            KeyPress(c) => format!("KeyPressed: {}", c),
+            Paste(s) => format!("Pasted: {}", s),
+            Click { x, y } => format!("Clicked on position: {}, {}", x, y),
+        }
+    }
+}
+
+fn inspect(event: WebEvent) {
+    match event {
+        PageLoad => println!("PageLoaded"),
+        PageUnload => println!("PageUnloaded"),
+        KeyPress(c) => println!("KeyPressed: {}", c),
+        Paste(s) => println!("Pasted: {}", s),
+        Click { x, y } => println!("Clicked on position: {}, {}", x, y),
+    }
+}
+
+enum Number {
+    Zero,
+    One,
+    Two,
+}
+
+// enum with explicit discriminator
+enum Color {
+    Red = 0xff0000,
+    Green = 0x00ff00,
+    Blue = 0x0000ff,
+}
+
+fn test_enum() {
+    let pressed = KeyPress('x');
+    // `to_owned()` creates an owned `String` from a string slice.
+    let pasted = Paste("my text".to_owned());
+    let click = Click { x: 20, y: 80 };
+    let load = PageLoad;
+    let unload = PageUnload;
+
+    inspect(pressed);
+    inspect(pasted);
+    inspect(click);
+    inspect(load);
+    inspect(unload);
+
+    let loadSec = WebEvent::PageLoad;
+    println!("{}", &loadSec.run(20));
+
+    println!("zero is {}", Number::Zero as i32);
+    println!("one is {}", Number::One as i32);
+
+    println!("roses are #{:06x}", Color::Red as i32);
+    println!("violets are #{:06x}", Color::Blue as i32);
+}
+
 fn main() {
     /* println!("{}", duplicate_encode("Success"));
 
@@ -313,5 +382,6 @@ fn main() {
     //tuple_activity();
 
     //arrays_slices();
-    struct_test();
+    // struct_test();
+    test_enum();
 }
