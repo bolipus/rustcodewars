@@ -316,7 +316,7 @@ fn inspect(event: WebEvent) {
     }
 }
 
-enum Number {
+enum Number_enum {
     Zero,
     One,
     Two,
@@ -346,11 +346,152 @@ fn test_enum() {
     let loadSec = WebEvent::PageLoad;
     println!("{}", &loadSec.run(20));
 
-    println!("zero is {}", Number::Zero as i32);
-    println!("one is {}", Number::One as i32);
+    println!("zero is {}", Number_enum::Zero as i32);
+    println!("one is {}", Number_enum::One as i32);
 
     println!("roses are #{:06x}", Color::Red as i32);
     println!("violets are #{:06x}", Color::Blue as i32);
+}
+
+fn test_var_bind() {
+    let mut x = 2;
+    {
+        let x = "4";
+    }
+
+    x = 4;
+}
+
+fn casting() {
+    let decimal = 22.8832_f32;
+
+    let integer = decimal as u8;
+
+    println!("Integer: {}", integer);
+
+    let character = integer as char;
+
+    println!("character: {}", character);
+
+    println!("1000 as a u16 is: {:b}", 1000 as u16);
+
+    let num = 1000;
+    println!("1000 as a u8 is : {:b}", num as u8);
+
+    println!("  -1 as a u8 is : {:b}", (-1i8) as u8);
+
+    println!("1000 mod 256 is : {:b}", 1000 % 256);
+
+    // Unless it already fits, of course.
+    println!(" 128 as a i16 is: {:b} ({})", 128 as i16, 128 as i16);
+    // 128 as u8 -> 128, whose two's complement in eight bits is:
+    let num: i16 = 128;
+    println!(" 128 as a i8 is : {:b} ({})", num as i8, num as i8);
+
+    println!("127={:b}", 127_i8);
+    println!("-128={:b}", -128_i8);
+
+    println!("255={:b}", 255_u8);
+    println!("0={:b}", 0_u8);
+
+    println!("255= {}", 127_u8 as i8);
+    println!("0={:b}", 0_u8 as i8);
+
+    let x = 1u8;
+    let y = 2u32;
+    let z = 3f32;
+
+    // Unsuffixed literal, their types depend on how they are used
+    let i = 1;
+    let f = 1.0;
+
+    // `size_of_val` returns the size of a variable in bytes
+    println!("size of `x` in bytes: {}", std::mem::size_of_val(&x));
+    println!("size of `y` in bytes: {}", std::mem::size_of_val(&y));
+    println!("size of `z` in bytes: {}", std::mem::size_of_val(&z));
+    println!("size of `i` in bytes: {}", std::mem::size_of_val(&i));
+    println!("size of `f` in bytes: {}", std::mem::size_of_val(&f));
+    let elem = 5u8;
+
+    // Create an empty vector (a growable array).
+    let mut vec = Vec::new();
+    // At this point the compiler doesn't know the exact type of `vec`, it
+    // just knows that it's a vector of something (`Vec<_>`).
+
+    // Insert `elem` in the vector.
+    vec.push(elem);
+    // Aha! Now the compiler knows that `vec` is a vector of `u8`s (`Vec<u8>`)
+    // TODO ^ Try commenting out the `vec.push(elem)` line
+
+    println!("{:?}", vec);
+}
+use std::convert::From;
+use std::convert::Into;
+use std::convert::TryFrom;
+use std::convert::TryInto;
+
+#[derive(Debug)]
+struct Number {
+    value: i32,
+}
+
+impl From<i32> for Number {
+    fn from(item: i32) -> Self {
+        Number { value: item }
+    }
+}
+
+impl fmt::Display for Number {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Number is: {}", self.value)
+    }
+}
+#[derive(Debug, PartialEq)]
+struct EvenNumber(i32);
+
+impl TryFrom<i32> for EvenNumber {
+    type Error = ();
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        if value % 2 == 0 {
+            Ok(EvenNumber(value))
+        } else {
+            Err(())
+        }
+    }
+}
+
+fn conversion() {
+    let s = "Test";
+    let myString = String::from(s);
+    let b = myString.into_boxed_str();
+    let ptr = b.as_ptr();
+    println!("b:{:?}", ptr);
+    let ref_b = b.as_ref();
+    println!("s:{:?}", ref_b);
+
+    let number = Number::from(34_i32);
+    println!("{}", number);
+
+    let n = 5;
+    let num: i32 = n.into();
+    println!("My number is {:?}", num);
+
+    assert_eq!(EvenNumber::try_from(8), Ok(EvenNumber(8)));
+    assert_eq!(EvenNumber::try_from(5), Err(()));
+
+    println!("{:?}", EvenNumber::try_from(5));
+
+    let result: Result<EvenNumber, ()> = 8i32.try_into();
+    assert_eq!(result, Ok(EvenNumber(8)));
+    let result: Result<EvenNumber, ()> = 5i32.try_into();
+    assert_eq!(result, Err(()));
+
+    let parsed: i32 = "5".parse().unwrap();
+    let turbo_parsed = "10".parse::<i32>().unwrap();
+
+    let sum = parsed + turbo_parsed;
+    println!("Sum: {:?}", sum);
 }
 
 fn main() {
@@ -383,5 +524,9 @@ fn main() {
 
     //arrays_slices();
     // struct_test();
-    test_enum();
+    //test_enum();
+    //test_var_bind();
+    //casting();
+
+    conversion();
 }
