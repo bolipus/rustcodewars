@@ -494,6 +494,34 @@ fn conversion() {
     println!("Sum: {:?}", sum);
 }
 
+fn expression() {
+    let x0 = 2;
+    let sum = {
+        let x = 20_i8;
+        let y = 12;
+        x + y + x0
+    };
+
+    println!("Sum: {:?}", sum)
+}
+
+fn flowControl() {
+    let mut count = 0;
+    loop {
+        count += 1;
+
+        if count % 2 == 0 {
+            continue;
+        }
+
+        println!("Count: {}", count);
+
+        if count > 6 {
+            break;
+        }
+    }
+}
+
 fn main() {
     /* println!("{}", duplicate_encode("Success"));
 
@@ -528,5 +556,7 @@ fn main() {
     //test_var_bind();
     //casting();
 
-    conversion();
+    //conversion();
+    //expression();
+    flowControl();
 }
