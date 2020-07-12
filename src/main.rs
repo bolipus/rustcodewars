@@ -3,6 +3,7 @@ use std::fmt;
 use std::mem;
 use std::str::FromStr;
 
+mod codewars;
 
 fn literals_operator() {
     println!("1 + 2 = {}", 1i32 + 2);
@@ -389,35 +390,78 @@ fn flowControl() {
             break;
         }
     }
+
+    let mut optional = Some(20);
+
+    match optional {
+        Some(i) => {
+            println!("Number: {:?}", i);
+        }
+        _ => {
+            println!("Not present");
+        }
+    }
+
+    if let Some(i) = Some(20) {
+        println!("Number is indeed: {}", i);
+    }
+
+    while let Some(i) = optional {
+        if i == 25 {
+            println!("Number is: {}", i);
+            optional = None;
+        } else {
+            println!("`i` is `{:?}`. Try again.", i);
+            optional = Some(i + 1);
+        }
+    }
+}
+
+fn isDivisibleBy(lhs: u32, rhs: u32) -> bool {
+    if (rhs == 0) {
+        return false;
+    }
+    lhs % rhs == 0
+}
+
+impl Point {
+    fn origin() -> Point {
+        Point { x: 0.0, y: 0.0 }
+    }
+
+    fn new(x: f32, y: f32) -> Point {
+        Point { x: x, y: y }
+    }
+
+    fn distance(&self, p: &Point) -> f32 {
+        let dx = self.x - p.x;
+        let dy: f32 = self.y - p.y;
+        (dx * dy + dy + dy).sqrt()
+    }
+
+    fn translate(&mut self, dx: f32, dy: f32) {
+        self.x += dx;
+        self.y += dy;
+    }
+}
+
+fn functions() {
+    println!("isD: {:?}", isDivisibleBy(20, 4));
+    println!("isD: {:?}", isDivisibleBy(20, 3));
+
+    let mut point = Point::new(22.2, 32.3);
+    let mut origin = Point::origin();
+
+    println!("Distance: {:?}", point.distance(&origin));
+
+    point.translate(3.0, -2.0);
+    println!("Point: {:?}", point);
+
+    println!("Distance: {:?}", point.distance(&origin));
 }
 
 fn main() {
-
-
-    println!("{}", codewars::cw01::reverse_words2("To je test"));
-
-    /* println!("{}", duplicate_encode("Success"));
-
-    println!("{}", reverse_words2("To je test"));*/
-
-    /* let b = vec!["BBAR 150", "CDXE 515", "BKWR 250", "BTSQ 890", "DRTY 600"];
-    let c = vec!["A", "B", "C", "D"];
-
-    println!("{}", stock_list(b, c));*/
-
-    /*match race(720, 850, 70) {
-         Some(val) => println!("{:?}", val),
-         None => println!("")
-    };*/
-
-    /* let mut x = vec![0.0, 0.23, 0.46, 0.69, 0.92, 1.15, 1.38, 1.61];
-    let mut s = 20;
-
-    println!("{}", gps(s, x));*/
-
-    /* println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 0"));
-    println!("{}", good_vs_evil("0 0 0 0 0 0", "0 0 0 0 0 0 10"));
-    println!("{}", good_vs_evil("0 0 0 0 0 10", "0 0 0 0 0 0 10"));*/
+    codewars::cw01::run();
 
     // literals_operator();
 
@@ -431,5 +475,6 @@ fn main() {
 
     //conversion();
     //expression();
-    flowControl();
+    //flowControl();
+    functions();
 }
