@@ -458,6 +458,101 @@ fn functions() {
     println!("Point: {:?}", point);
 
     println!("Distance: {:?}", point.distance(&origin));
+
+    let x = 20;
+
+    let fun1 = |i: i32| -> i32 { i + 1 + x };
+
+    let fun2 = |i| i + 1 + x;
+
+    let i = 1;
+    println!("Inc1: {:?}", fun1(i));
+    println!("Inc2: {:?}", fun2(i));
+
+    let one = || 1;
+    println!("One: {:?}", one());
+
+    let color = "Green";
+
+    let print = || println!("Color: {:?}", color);
+
+    print();
+
+    let _reborow = &color;
+    print();
+
+    let mut count = 0;
+
+    let mut inc = || {
+        count += 1;
+        println!("Count: {:?}", count);
+    };
+
+    inc();
+
+    inc();
+
+    let reborrow = &mut count;
+
+    let movable = Box::new(3);
+
+    let consume = || {
+        println!("Movable: {:?}", movable);
+        mem::drop(movable);
+    };
+
+    consume();
+
+    let haystack = vec![1, 2, 3];
+
+    let contains = move |needle| haystack.contains(needle);
+
+    println!("{}", contains(&1));
+    println!("{}", contains(&2));
+}
+
+fn apply<F>(f: F)
+where
+    F: FnOnce(),
+{
+    f();
+}
+
+fn apply_to_3<F>(f: F) -> i32
+where
+    F: Fn(i32) -> i32,
+{
+    f(3)
+}
+
+fn functions2() {
+    let x = 30;
+
+    println!("x: {:?}", x);
+
+    let y = apply_to_3(|x| x + 20);
+
+    println!("y: {:?}", y);
+
+    let greeting = "Hello";
+    let mut farewel = "Goodby".to_owned();
+
+    let diary = || {
+        println!("I said {}", greeting);
+
+        farewel.push_str("!!!!!");
+        println!("Than I screemed {}", farewel);
+
+        println!("Than I sleep");
+
+        mem::drop(farewel);
+    };
+
+    apply(diary);
+
+    let double = |x| 2 * x;
+
+    println!("3 doubled: {}", apply_to_3(double));
 }
 
 fn main() {
@@ -476,5 +571,6 @@ fn main() {
     //conversion();
     //expression();
     //flowControl();
-    functions();
+    // functions();
+    functions2();
 }
