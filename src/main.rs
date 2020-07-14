@@ -529,7 +529,7 @@ fn call_me<F: Fn()>(f: F) {
     f();
 }
 
-fn function(){
+fn function() {
     println!("I am function");
 }
 
@@ -562,14 +562,13 @@ fn functions2() {
 
     println!("3 doubled: {}", apply_to_3(double));
 
-    let closure= || println!("I am closure");
+    let closure = || println!("I am closure");
 
     call_me(function);
     call_me(closure);
-
 }
 
-fn create_fn() -> impl Fn(){
+fn create_fn() -> impl Fn() {
     let text = "Fn".to_owned();
     move || println!("This is a text: {}", text)
 }
@@ -579,16 +578,14 @@ fn create_fn_mut() -> impl FnMut() {
     move || println!("This is a text: {}", text)
 }
 
-
 fn create_fn_once() -> impl FnOnce() {
     let text = "FnOnce".to_owned();
 
     move || println!("This is a: {}", text)
 }
 
-fn functions3(){
-
-    let x =create_fn();
+fn functions3() {
+    let x = create_fn();
     x();
 
     let mut y = create_fn_mut();
@@ -597,15 +594,14 @@ fn functions3(){
     let z = create_fn_once();
     z();
 
-
-    let v1 = vec![1,2,3];
-    let v2= vec![4,5,6];
+    let v1 = vec![1, 2, 3];
+    let v2 = vec![4, 5, 6];
 
     println!("2 in v1: {}", v1.iter().any(|&x| x == 2));
     println!("2 in v2: {}", v2.iter().any(|&x| x == 2));
 
-    let a1 =  [1,2,3];
-    let a2= [4,5,6];
+    let a1 = [1, 2, 3];
+    let a2 = [4, 5, 6];
 
     println!("2 in v1: {}", a1.iter().any(|&x| x == 2));
     println!("2 in v2: {}", a2.iter().any(|&x| x == 2));
@@ -626,8 +622,63 @@ fn functions3(){
 
     let index_of_first_even_number = array1.iter().position(|x| x % 2 == 0);
 
-    println!("index_of_first_even_number:  {}", index_of_first_even_number.unwrap());
+    println!(
+        "index_of_first_even_number:  {}",
+        index_of_first_even_number.unwrap()
+    );
+}
 
+fn is_odd(n: u32) -> bool {
+    n % 2 == 1
+}
+
+fn foo() -> () {
+    ()
+}
+
+fn higherOrder() {
+    let upper = 1000;
+    let mut acc = 0;
+
+    for n in 0.. {
+        let n_squared = n * n;
+        if n_squared > upper {
+            break;
+        } else if is_odd(n_squared) {
+            acc += n_squared;
+        }
+    }
+    println!("Sum1: {:?}", acc);
+
+    let sum2 = (0..)
+        .map(|n| n * n)
+        .take_while(|&n_squared| n_squared < upper)
+        .filter(|&n_squared| n_squared % 2 == 1)
+        .fold(0, |acc, n_squared| acc + n_squared);
+
+    println!("Sum2: {:?}", sum2);
+
+    fn sum_odd_numbers(up_to: u32) -> u32 {
+        let mut acc = 0;
+        for i in 0..up_to {
+            // Notice that the return type of this match expression must be u32
+            // because of the type of the "addition" variable.
+            let addition: u32 = match i % 2 == 1 {
+                // The "i" variable is of type u32, which is perfectly fine.
+                true => i,
+                // On the other hand, the "continue" expression does not return
+                // u32, but it is still fine, because it never returns and therefore
+                // does not violate the type requirements of the match expression.
+                false => continue,
+            };
+            acc += addition;
+        }
+        acc
+    }
+    println!(
+        "Sum of odd numbers up to 9 (excluding): {}",
+        sum_odd_numbers(9)
+    );
 }
 
 fn main() {
@@ -648,5 +699,7 @@ fn main() {
     //flowControl();
     // functions();
     //functions2();
-    functions3();
+    //functions3();
+
+    higherOrder();
 }
