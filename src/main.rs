@@ -525,6 +525,14 @@ where
     f(3)
 }
 
+fn call_me<F: Fn()>(f: F) {
+    f();
+}
+
+fn function(){
+    println!("I am function");
+}
+
 fn functions2() {
     let x = 30;
 
@@ -553,6 +561,73 @@ fn functions2() {
     let double = |x| 2 * x;
 
     println!("3 doubled: {}", apply_to_3(double));
+
+    let closure= || println!("I am closure");
+
+    call_me(function);
+    call_me(closure);
+
+}
+
+fn create_fn() -> impl Fn(){
+    let text = "Fn".to_owned();
+    move || println!("This is a text: {}", text)
+}
+
+fn create_fn_mut() -> impl FnMut() {
+    let text = "FnMut".to_owned();
+    move || println!("This is a text: {}", text)
+}
+
+
+fn create_fn_once() -> impl FnOnce() {
+    let text = "FnOnce".to_owned();
+
+    move || println!("This is a: {}", text)
+}
+
+fn functions3(){
+
+    let x =create_fn();
+    x();
+
+    let mut y = create_fn_mut();
+    y();
+
+    let z = create_fn_once();
+    z();
+
+
+    let v1 = vec![1,2,3];
+    let v2= vec![4,5,6];
+
+    println!("2 in v1: {}", v1.iter().any(|&x| x == 2));
+    println!("2 in v2: {}", v2.iter().any(|&x| x == 2));
+
+    let a1 =  [1,2,3];
+    let a2= [4,5,6];
+
+    println!("2 in v1: {}", a1.iter().any(|&x| x == 2));
+    println!("2 in v2: {}", a2.iter().any(|&x| x == 2));
+
+    let mut iter1 = v1.iter();
+    let mut into_iter = v2.into_iter();
+
+    println!("Find 2 in v1: {:?}", iter1.find(|&&x| x == 2));
+
+    println!("Find 2 in v1: {:?}", into_iter.find(|&x| x == 2));
+
+    let array1 = [1, 2, 3];
+    let array2 = [4, 5, 6];
+
+    println!("Find 2 in v1: {:?}", array1.iter().find(|&&x| x == 2));
+
+    println!("Find 2 in v1: {:?}", array2.into_iter().find(|&&x| x == 2));
+
+    let index_of_first_even_number = array1.iter().position(|x| x % 2 == 0);
+
+    println!("index_of_first_even_number:  {}", index_of_first_even_number.unwrap());
+
 }
 
 fn main() {
@@ -572,5 +647,6 @@ fn main() {
     //expression();
     //flowControl();
     // functions();
-    functions2();
+    //functions2();
+    functions3();
 }
