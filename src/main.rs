@@ -681,6 +681,89 @@ fn higherOrder() {
     );
 }
 
+struct S;
+
+struct GenericVal<T>(T);
+
+impl GenericVal<i32> {}
+
+impl GenericVal<S> {}
+
+impl<T> GenericVal<T> {}
+
+struct Val {
+    val: f64,
+}
+
+struct GenVal<T> {
+    gen_val: T,
+}
+
+// impl of Val
+impl Val {
+    fn value(&self) -> &f64 {
+        &self.val
+    }
+}
+
+// impl of GenVal for a generic type `T`
+impl<T> GenVal<T> {
+    fn value(&self) -> &T {
+        &self.gen_val
+    }
+}
+
+fn generics() {
+    let x = Val { val: 3.0 };
+    let y = GenVal { gen_val: 3i32 };
+
+    println!("{}, {}", x.value(), y.value());
+}
+
+fn create_box() {
+    let _box = Box::new(3i32);
+}
+
+struct ToDrop;
+
+impl Drop for ToDrop {
+    fn drop(&mut self) {
+        println!("ToDrop is being dropped");
+    }
+}
+
+fn destroy_box(c: Box<i32>) {
+    println!("Destroying a box that contains {}", c);
+
+    // `c` is destroyed and the memory freed
+}
+
+fn scoping() {
+    /* create_box();
+
+    let _box2 = Box::new(5i32);
+    {
+        let _box3 = Box::new(4i32);
+    }
+
+    let x = ToDrop;
+    {
+        let y = ToDrop;
+    }*/
+
+    let x = 5u32;
+    let y = x;
+
+    println!("x is {}, and y is {}", x, y);
+
+    let a = Box::new(5i32);
+    let mut b = a;
+    *b = 30i32;
+    
+    //destroy_box(b);
+    println!("{}", b);
+}
+
 fn main() {
     codewars::cw01::run();
 
@@ -701,5 +784,9 @@ fn main() {
     //functions2();
     //functions3();
 
-    higherOrder();
+    //higherOrder();
+
+    //generics();
+
+    scoping();
 }
