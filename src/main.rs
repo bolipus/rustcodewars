@@ -759,9 +759,101 @@ fn scoping() {
     let a = Box::new(5i32);
     let mut b = a;
     *b = 30i32;
-    
     //destroy_box(b);
     println!("{}", b);
+}
+
+fn ownership() {
+    let a = Box::new(5i32);
+    let mut b = a;
+    *b = 4;
+    println!("{}", b);
+}
+
+fn eat_box(boxed: Box<i32>) {
+    println!("{}", boxed);
+}
+
+fn borrow(borrowed: &i32) {
+    println!("{}", borrowed);
+}
+
+fn borrowing() {
+    let boxed = Box::new(5_i32);
+    let stacked = 6_i32;
+
+    borrow(&boxed);
+    borrow(&stacked);
+
+    {
+        let refTo: &i32 = &boxed;
+
+        borrow(refTo);
+    }
+
+    eat_box(boxed);
+}
+
+#[derive(Clone, Copy)]
+struct Book {
+    author: &'static str,
+    title: &'static str,
+    year: u32,
+}
+
+fn borrow_book(book: &Book) {
+    println!("I immutably borrowed {} - {}", book.author, book.title);
+}
+
+fn new_edition(book: &mut Book) {
+    book.year = 2014;
+    println!("I mutably borrowed {} - {} edition", book.title, book.year);
+}
+
+fn mutability() {
+    let immutable_book = Book {
+        author: "Ivan Cankar",
+        title: "Hlapci",
+        year: 1910,
+    };
+
+    let mut mutable_book = immutable_book;
+
+    borrow_book(&immutable_book);
+
+    borrow_book(&mutable_book);
+
+    new_edition(&mut mutable_book);
+}
+
+struct Location {
+    x: i32,
+    y: i32,
+    z: i32,
+}
+
+fn aliasing() {
+    let mut location = Location { x: 0, y: 0, z: 0 };
+
+    let borrow1 = &location;
+    let borrow2 = &location;
+
+    println!("{} {}", location.x, borrow1.x);
+
+    //let mut_borow = &mut location;
+
+    println!(
+        "Location has coordinates: ({}, {}, {})",
+        borrow1.x, borrow2.y, location.z
+    );
+
+    let mut_borow = &mut location;
+
+    mut_borow.x = 10;
+    mut_borow.y = 23;
+    mut_borow.z = 29;
+
+    let borrow3 = &location;
 }
 
 fn main() {
@@ -788,5 +880,13 @@ fn main() {
 
     //generics();
 
-    scoping();
+    //scoping();
+
+    //ownership();
+
+    //borrowing();
+
+    //mutability();
+
+    aliasing();
 }
