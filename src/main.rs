@@ -856,6 +856,106 @@ fn aliasing() {
     let borrow3 = &location;
 }
 
+#[derive(PartialEq, PartialOrd)]
+struct Centimeters(f64);
+
+#[derive(Debug)]
+struct Inches(i32);
+
+impl Inches {
+    fn to_centimeters(&self) -> Centimeters {
+        let &Inches(inches) = self;
+        Centimeters(inches as f64 * 2.54)
+    }
+}
+
+struct Seconds(i32);
+
+fn deriveTest() {
+    let one_second = Seconds(1);
+
+    let foot = Inches(12);
+    println!("One foot equals: {:?}", foot);
+
+    let meter = Centimeters(100.0);
+
+    let cmp = if foot.to_centimeters() < meter {
+        "smaller"
+    } else {
+        "bigger"
+    };
+
+    println!("One foot is {} than one meter.", cmp);
+}
+
+struct Sheep {}
+struct Cow {}
+
+trait Animal {
+    fn noise(&self) -> &'static str;
+}
+
+impl Animal for Sheep {
+    fn noise(&self) -> &'static str {
+        "baaah"
+    }
+}
+
+impl Animal for Cow {
+    fn noise(&self) -> &'static str {
+        "moooooo"
+    }
+}
+
+fn random_animal(random_number: f64) -> Box<dyn Animal> {
+    if random_number < 0.5 {
+        Box::new(Sheep {})
+    } else {
+        Box::new(Cow {})
+    }
+}
+
+fn dyReturn() {
+    let random_number = 0.3444;
+    let animal = random_animal(random_number);
+    println!(
+        "You've randomly chosen an animal, and it says {}",
+        animal.noise()
+    );
+}
+
+use std::ops;
+
+struct Foo;
+struct Bar;
+
+#[derive(Debug)]
+struct FooBar;
+#[derive(Debug)]
+struct BarFoo;
+
+impl ops::Add<Bar> for Foo {
+    type Output = FooBar;
+
+    fn add(self, _rhs: Bar) -> FooBar {
+        println!("> Foo.add(Bar) was called");
+        FooBar
+    }
+}
+
+impl ops::Add<Foo> for Bar {
+    type Output = BarFoo;
+    fn add(self, rhs: Foo) -> BarFoo {
+        println!("> Bar.add(Foo) was called");
+        BarFoo
+    }
+}
+
+fn operatorOverloading() {
+    println!("Foo + Bar = {:?}", Foo + Bar);
+    println!("Bar + Foo = {:?}", Bar + Foo);
+}
+
 fn main() {
     codewars::cw01::run();
 
@@ -888,5 +988,9 @@ fn main() {
 
     //mutability();
 
-    aliasing();
+    //  aliasing();
+
+    //deriveTest();
+    //dyReturn();
+    operatorOverloading();
 }
