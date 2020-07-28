@@ -956,6 +956,78 @@ fn operatorOverloading() {
     println!("Bar + Foo = {:?}", Bar + Foo);
 }
 
+struct Droppable {
+    name: &'static str,
+}
+
+impl Drop for Droppable {
+    fn drop(&mut self) {
+        println!("> Dropping {}", self.name);
+    }
+}
+
+fn dropping() {
+    let a = Droppable { name: "a" };
+    {
+        let b = Droppable { name: "b" };
+        {
+            let c = Droppable { name: "c" };
+
+            let d = Droppable { name: "d" };
+
+            println!("Exiting block B");
+        }
+        println!("Just exited block B");
+
+        println!("Exiting block A");
+    }
+}
+
+struct Fibonacci {
+    curr: u32,
+    next: u32,
+}
+
+impl Iterator for Fibonacci {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<u32> {
+        let new_next = self.curr + self.next;
+
+        self.curr = self.next;
+        self.next = new_next;
+        Some(self.curr)
+    }
+}
+
+fn fibonacci() -> Fibonacci {
+    Fibonacci { curr: 0, next: 1 }
+}
+
+fn iterTest() {
+    let mut sequence = 0..3;
+
+    println!("Four consecutive `next` calls on 0..3");
+    println!("> {:?}", sequence.next());
+    println!("> {:?}", sequence.next());
+    println!("> {:?}", sequence.next());
+    println!("> {:?}", sequence.next());
+
+    for i in fibonacci().take(4) {
+        println!("> {}", i);
+    }
+
+    for i in fibonacci().skip(4).take(4) {
+        println!("> {}", i);
+    }
+
+    let array = [1u32, 3, 3, 7];
+    for i in array.iter() {
+        println!("> {}", i);
+    }
+
+}
+
 fn main() {
     codewars::cw01::run();
 
@@ -992,5 +1064,9 @@ fn main() {
 
     //deriveTest();
     //dyReturn();
-    operatorOverloading();
+    // operatorOverloading();
+
+    // dropping();
+
+    iterTest();
 }
